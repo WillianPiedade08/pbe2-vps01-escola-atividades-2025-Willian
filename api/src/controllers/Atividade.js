@@ -3,58 +3,73 @@ const prisma = new PrismaClient();
 
 const create = async (req, res) => {
     try {
-        const cliente = await prisma.cliente.create({
+        const atividade = await prisma.atividade.create({
             data: req.body
         });
-        res.status(201).json(cliente).end();
+        res.status(201).json(atividade).end();
     } catch (e) {
-        res.status(400).json(e).end();
+        res.status(400).json({ error: e.message }).end();
     }
-}
+};
 
 const read = async (req, res) => {
-    const clientes = await prisma.cliente.findMany();
-    res.json(clientes);
-}
+    try {
+        const atividades = await prisma.atividade.findMany({
+            include: {
+                aluno: true
+            }
+        });
+        res.json(atividades);
+    } catch (e) {
+        res.status(400).json({ error: e.message }).end();
+    }
+};
 
 const readOne = async (req, res) => {
-    const cliente = await prisma.cliente.findFirst({
-        where: {
-            cliente_id: Number(req.params.id)
-        },
-        include: {
-            pedidos: true
+    try {
+        const atividade = await prisma.atividade.findUnique({
+            where: {
+                id: Number(req.params.id)
+            },
+            include: {
+                aluno: true
+            }
+        });
+        if (!atividade) {
+            return res.status(404).json({ error: 'Atividade não encontrada' }).end();
         }
-    });
-    res.json(cliente);
-}
+        res.json(atividade);
+    } catch (e) {
+        res.status(400).json({ error: e.message }).end();
+    }
+};
 
 const update = async (req, res) => {
     try {
-        const cliente = await prisma.cliente.update({
+        const atividade = await prisma.atividade.update({
             data: req.body,
             where: {
-                cliente_id: Number(req.params.id)
+                id: Number(req.params.id)
             }
         });
-        res.status(202).json(cliente).end();
+        res.status(202).json(atividade).end();
     } catch (e) {
-        res.status(400).json(e).end();
+        res.status(400).json({ error: e.message }).end();
     }
-}
+};
 
 const remove = async (req, res) => {
     try {
-        const cliente = await prisma.cliente.delete({
+        await prisma.atividade.delete({
             where: {
-                cliente_id: Number(req.params.id)
+                id: Number(req.params.id)
             }
         });
-        res.status(204).json(cliente).end();
+        res.status(204).end();
     } catch (e) {
-        res.status(400).json(e).end();
+        res.status(400).json({ error: e.message }).end();
     }
-}
+};
 
 module.exports = {
     create,
@@ -62,4 +77,4 @@ module.exports = {
     readOne,
     update,
     remove
-}
+};
