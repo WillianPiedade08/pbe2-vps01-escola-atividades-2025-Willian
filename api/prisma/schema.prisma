@@ -8,29 +8,29 @@ datasource db {
 }
 
 model Aluno {
-  ra String @id @default(cuid())
-  nome String
-  email String @unique
+  ra        String      @id @db.VarChar(20)
+  nome      String
+  email     String      @unique
   telefones Telefone[]
   atividades Atividade[]
 }
 
 model Telefone {
-  id Int @id @default(autoincrement())
-  alunoRa String
-  numero String @db.VarChar(20)
-  tipo String @db.VarChar(20)
-  aluno Aluno @relation(fields: [alunoRa], references: [ra])
+  id       Int     @id @default(autoincrement())
+  alunoRa  String
+  numero   String  @db.VarChar(20)
+  tipo     String  @db.VarChar(20)
+  aluno    Aluno   @relation(fields: [alunoRa], references: [ra], onDelete: Cascade)
 }
 
 model Atividade {
-  id Int @id @default(autoincrement())
-  nome String
-  alunoRa String
-  dataInicio DateTime
+  id          Int      @id @default(autoincrement())
+  nome        String
+  alunoRa     String
+  dataInicio  DateTime
   dataEntrega DateTime?
-  nota Int? @db.Int
-  peso Float @db.Float
-  parcial Float? @db.Float
-  aluno Aluno @relation(fields: [alunoRa], references: [ra])
+  nota        Int?     @db.Int
+  peso        Float    @db.Float
+  parcial     Float?   @db.Float
+  aluno       Aluno    @relation(fields: [alunoRa], references: [ra], onDelete: Cascade)
 }
