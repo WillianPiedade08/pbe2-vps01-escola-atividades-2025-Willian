@@ -7,30 +7,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Aluno {
-  ra        String      @id @db.VarChar(20)
-  nome      String
-  email     String      @unique
+model Aluno{
+  id Int @id @default(autoincrement())
+  nome String
+  email String
   telefones Telefone[]
   atividades Atividade[]
 }
 
-model Telefone {
-  id       Int     @id @default(autoincrement())
-  alunoRa  String
-  numero   String  @db.VarChar(20)
-  tipo     String  @db.VarChar(20)
-  aluno    Aluno   @relation(fields: [alunoRa], references: [ra], onDelete: Cascade)
+model Telefone{
+  id Int @id @default(autoincrement())
+  AlunoId Int
+  numero String @db.VarChar(20)
+  tipo String @db.VarChar(20)
+  Aluno Aluno @relation(fields: [AlunoId], references: [id])
 }
 
-model Atividade {
-  id          Int      @id @default(autoincrement())
-  nome        String
-  alunoRa     String
-  dataInicio  DateTime
-  dataEntrega DateTime?
-  nota        Int?     @db.Int
-  peso        Float    @db.Float
-  parcial     Float?   @db.Float
-  aluno       Aluno    @relation(fields: [alunoRa], references: [ra], onDelete: Cascade)
+model Atividade{
+  id Int @id @default(autoincrement())
+  AlunoId Int
+  dataInicio DateTime @default(now())
+  dataEntrega DateTime? @default(now())
+  Nome String
+  nota Int?
+  peso Decimal @db.Decimal(10,2)
+  Parcial Decimal? @db.Decimal(10,2)
+  Aluno Aluno @relation(fields: [AlunoId], references: [id])
 }
