@@ -2,7 +2,7 @@ const express = require('express');
 const routes = express.Router();
 
 const Aluno = require('./controllers/aluno');
-const Atividade = require('./controllers/Atividade');
+const Atividade = require('./controllers/atividade');
 
 routes.get('/', (req, res) => {
   return res.json({ titulo: 'Escola ACME' });
